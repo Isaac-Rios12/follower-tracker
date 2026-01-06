@@ -1,6 +1,6 @@
 import argparse
 
-from src.parser import parse_raw_followers
+from src.parser import parse_raw_followers, load_snapshot
 from src.comparator import compare_followers
 
 from src.writer import write_user_list
@@ -12,14 +12,9 @@ def get_args():
     )
 
     parser.add_argument(
-        "day1",
-        help="Follower file from day 1"
+        "current",
+        help="Raw file of today's followers"
     )
-    parser.add_argument(
-        "day2",
-        help="Follower file from day 2"
-    )
-
     return parser.parse_args()
 
 def validate_input_file(path: str):
@@ -28,30 +23,40 @@ def validate_input_file(path: str):
     if os.path.getsize(path) == 0:
         raise ValueError(f"The file is empty: {path}")
 
-
+STATE_DIR = "data/state"
+LAST_SNAPSHOT = f"{STATE_DIR}/last_followers.txt"
 
 def main():
     args = get_args()
     #me aseguro que exista
     try:
-        validate_input_file(args.day1)
-        validate_input_file(args.day2)
+        validate_input_file(args.current)
+
+        os.makedirs(STATE_DIR, exist_ok=True)
         os.makedirs("output", exist_ok=True)
 
-        followers_day1 = parse_raw_followers(args.day1)
-        followers_day2 = parse_raw_followers(args.day2)
+        current_followers = parse_raw_followers(args.current)
+
+        if not os.path.exists(LAST_SNAPSHOT):
+            write_user_list(LAST_SNAPSHOT, current_followers)
+            print("Base de seguidores creada, ejecute nuevamente para comparar")
+            return
+        
+        previous_followers = load_snapshot(LAST_SNAPSHOT)
 
         unfollowers, new_followers = compare_followers(
-            followers_day1,
-            followers_day2
+            previous_followers,
+            current_followers
         )
         if not unfollowers and not new_followers:
-            print("No hay cambios entre los días.")
-            return
+            print("No hay cambios desde la última ejecución.")
+        else:
+            write_user_list("output/unfollowers.txt", unfollowers)
+            write_user_list("output/new_followers.txt", new_followers)
+            print("Cambios detectados. Archivos actualizados en /output")
 
 
-        write_user_list("output/unfollowers.txt", unfollowers)
-        write_user_list("output/new_followers.txt", new_followers)
+        write_user_list(LAST_SNAPSHOT, current_followers)
 
         print("Archivos generados en /output")
     except Exception as e:

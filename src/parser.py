@@ -27,8 +27,8 @@ def parse_raw_followers(file_path: str) -> Set[str]:
         for i, raw_line in enumerate(file, start=1):
             line = raw_line.strip()
 
-            print(f"\nLínea {i}: '{line}'")
-            print(f"  expecting_username = {expecting_username}")
+            #print(f"\nLínea {i}: '{line}'")
+            #print(f"  expecting_username = {expecting_username}")
 
             # Separadores explícitos
             if not line or line == "·":
@@ -37,13 +37,13 @@ def parse_raw_followers(file_path: str) -> Set[str]:
                 ·
                 samanta
                 En este caso detecta el ·, entonces el siguiente no se espera que sea username, es el mismo usuario'''
-                print(" Separador detectado, no es candidata a username, reseteo estado")
+                #print(" Separador detectado, no es candidata a username, reseteo estado")
                 expecting_username = False
                 continue
 
             # Línea NO candidata
             if not is_candidate_username(line):
-                print("  No es candidata a username, reseteo estado")
+                #print("  No es candidata a username, reseteo estado")
                 expecting_username = True
                 continue
 
@@ -55,11 +55,23 @@ def parse_raw_followers(file_path: str) -> Set[str]:
                 Son el mismo usuario, el primero es el username valido, por lo siguiente se marca
                 que la siguente validacion no es un candidato
                 '''
-                print(f" username detectado: {line}")
+                #print(f" username detectado: {line}")
                 usernames.add(line)
                 expecting_username = False
             else:
                 expecting_username = True
-                print(f"candidata ignorada (ya hay username en bloque): {line}")
+                #print(f"candidata ignorada (ya hay username en bloque): {line}")
+
+    return usernames
+
+
+def load_snapshot(file_path: str) -> Set[str]:
+    usernames: Set[str] = set()
+
+    with open(file_path, "r", encoding="utf-8") as file:
+        for line in file:
+            line = line.strip().lower()
+            if line:
+                usernames.add(line)
 
     return usernames
