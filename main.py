@@ -22,39 +22,41 @@ def get_args():
 
     return parser.parse_args()
 
+def validate_input_file(path: str):
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"The file doesnt exist: {path}")
+    if os.path.getsize(path) == 0:
+        raise ValueError(f"The file is empty: {path}")
+
 
 
 def main():
     args = get_args()
     #me aseguro que exista
-    os.makedirs("output", exist_ok=True)
+    try:
+        validate_input_file(args.day1)
+        validate_input_file(args.day2)
+        os.makedirs("output", exist_ok=True)
 
-    followers_day1 = parse_raw_followers(args.day1)
-    followers_day2 = parse_raw_followers(args.day2)
+        followers_day1 = parse_raw_followers(args.day1)
+        followers_day2 = parse_raw_followers(args.day2)
 
-    unfollowers, new_followers = compare_followers(
-        followers_day1,
-        followers_day2
-    )
+        unfollowers, new_followers = compare_followers(
+            followers_day1,
+            followers_day2
+        )
+        if not unfollowers and not new_followers:
+            print("No hay cambios entre los días.")
+            return
 
-    # print("Unfollowers: ")
-    # if unfollowers:
-    #     for user in sorted(unfollowers):
-    #         print(f"- {user}")
-    # else:
-    #         print("Ninguno")
-        
 
-    # print("------------------------------------------------------")
-    # print("nuevos seguidores")
-    # if new_followers:
-    #     for user in sorted(new_followers):
-    #         print(f"+ {user}")
-    # else:
-    #         print("Ninguno")
+        write_user_list("output/unfollowers.txt", unfollowers)
+        write_user_list("output/new_followers.txt", new_followers)
 
-    write_user_list("output/unfollowers.txt", unfollowers)
-    write_user_list("output/new_followers.txt", new_followers)
+        print("Archivos generados en /output")
+    except Exception as e:
+        print(f"Error: {e}")
+
 
 
 if __name__ == "__main__":
