@@ -1,0 +1,7 @@
+# Datos reales de seguidores
+data/raw/*
+!data/raw/.gitkeep
+
+# Reportes generados
+data/reports/*
+!data/reports/.gitkeep
