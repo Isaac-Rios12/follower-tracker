@@ -32,8 +32,13 @@ def parse_raw_followers(file_path: str) -> Set[str]:
 
             # Separadores explícitos
             if not line or line == "·":
-                print(" Separador detectado, espero nuevo username")
-                expecting_username = True
+                '''ejemplo:
+                samanta73762
+                ·
+                samanta
+                En este caso detecta el ·, entonces el siguiente no se espera que sea username, es el mismo usuario'''
+                print(" Separador detectado, no es candidata a username, reseteo estado")
+                expecting_username = False
                 continue
 
             # Línea NO candidata
@@ -44,10 +49,17 @@ def parse_raw_followers(file_path: str) -> Set[str]:
 
             # Línea candidata
             if expecting_username:
+                '''Ejemplo:
+                liliancaroline_28
+                Carol
+                Son el mismo usuario, el primero es el username valido, por lo siguiente se marca
+                que la siguente validacion no es un candidato
+                '''
                 print(f" username detectado: {line}")
                 usernames.add(line)
                 expecting_username = False
             else:
+                expecting_username = True
                 print(f"candidata ignorada (ya hay username en bloque): {line}")
 
     return usernames
