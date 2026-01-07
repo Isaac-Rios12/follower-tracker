@@ -14,12 +14,12 @@ Instagram **no te dice claramente**:
 - quién te dejó de seguir
 - quién es nuevo seguidor
 
-Este proyecto compara listas de seguidores entre días y te da:
+Este proyecto compara listas de seguidores y te da:
 
 - Unfollowers
 - Nuevos seguidores
 
-Además, **recuerda automáticamente la última lista**, así no tienes que andar manejando dos archivos cada vez 👌
+Además, **recuerda automáticamente la última lista**, así no tienes que andar manejando dos archivos cada vez
 
 ---
 
@@ -84,12 +84,19 @@ El sistema está diseñado para limpiar automáticamente los datos.
 Instagram copia cosas como:
 
 liliancaroline_28
+
 Carol
+
 samanta73762
+
 ·
+
 samanta
+
 boryryss
+
 ·
+
 🩹
 
 Detalles importantes:
@@ -116,7 +123,7 @@ python main.py data/raw/today.txt
 - No hay comparación todavía
 - Se guarda la lista como base inicial
 
-### Días siguientes
+### Siguentes ejecuciones
 
 - Haz los mismos pasos de copiar los seguidores.
 - Pegalos en el archivo txt dentro de data/raw
@@ -150,8 +157,6 @@ Usuarios que empezaron a seguirte
 La última lista válida usada como base
 
 **No edites este archivo manualmente**, el sistema lo gestiona solo.
-
----
 
 ---
 
